@@ -5,6 +5,7 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.res.Configuration
 import android.net.ConnectivityManager
 import android.os.Bundle
 import android.text.Editable
@@ -113,6 +114,14 @@ class MainActivity : AppCompatActivity(), OnRefreshListener {
         // Search search menu icon based on the current theme
         searchMenuItem.setIcon(if (sharedPreferences!!.getBoolean("DarkThemeOn", false)) R.drawable.search_white else R.drawable.search_black)
         return true
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+       super.onConfigurationChanged(newConfig)
+
+       val recyclerView: RecyclerView = findViewById(R.id.episodeList)
+
+       if (recyclerView.adapter != null) recyclerView.adapter!!.notifyDataSetChanged()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
