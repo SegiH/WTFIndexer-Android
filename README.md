@@ -10,4 +10,4 @@ When you run the app for the first time, you will see a pop up message telling y
 
 You can find a precompiled apk in the release section.
 
-Please contact me if you have any questons, run into any problems or would like to suggest new features. 
+Please contact me if you have any questions, run into any problems or would like to suggest new features. 

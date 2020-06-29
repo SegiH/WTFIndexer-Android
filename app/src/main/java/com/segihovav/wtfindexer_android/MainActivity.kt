@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
+import com.android.volley.BuildConfig
 import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.Response
@@ -217,7 +218,7 @@ class MainActivity : AppCompatActivity(), OnRefreshListener {
                 episodeNames.add(arrayList[i].imdbLink)
 
             // Set value of episode info
-            episodeInfo.add("#" + arrayList[i].episodeNumber + " " + arrayList[i].releaseDate)
+            episodeInfo.add("#" + arrayList[i].episodeNumber + " " + arrayList[i].releaseDate.replace("Â",""))
         }
 
         // specify an adapter (see also next example)
