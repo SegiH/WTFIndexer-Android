@@ -34,6 +34,7 @@ internal class SwipeController(
     }
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {}
+
     override fun convertToAbsoluteDirection(flags: Int, layoutDirection: Int): Int {
         if (swipeBack) {
             swipeBack = buttonShowedState != ButtonsState.GONE
@@ -48,6 +49,7 @@ internal class SwipeController(
             if (buttonShowedState != ButtonsState.GONE) {
                 if (buttonShowedState == ButtonsState.LEFT_VISIBLE) dX = max(dX, buttonWidth)
                 if (buttonShowedState == ButtonsState.RIGHT_VISIBLE) dX = min(dX, -buttonWidth)
+
                 super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
             } else {
                 setTouchListener(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
@@ -71,6 +73,7 @@ internal class SwipeController(
                 } else if (dX > buttonWidth) {
                     buttonShowedState = ButtonsState.LEFT_VISIBLE
                 }
+
                 if (buttonShowedState != ButtonsState.GONE) {
                     setTouchDownListener(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
                     setItemsClickable(recyclerView, false)
@@ -97,7 +100,7 @@ internal class SwipeController(
                 super@SwipeController.onChildDraw(c, recyclerView, viewHolder, 0f, dY, actionState, isCurrentlyActive)
                 recyclerView.setOnTouchListener { v, event -> false }
                 setItemsClickable(recyclerView, true)
-                swipeBack = false
+                //swipeBack = false
                 if (buttonsActions != null && buttonInstance != null && buttonInstance!!.contains(event.x, event.y)) {
                     if (buttonShowedState == ButtonsState.LEFT_VISIBLE) {
                         buttonsActions.onLeftClicked(episodeList, viewHolder.adapterPosition)
@@ -105,9 +108,10 @@ internal class SwipeController(
                         buttonsActions.onRightClicked(episodeList, viewHolder.adapterPosition)
                     }
                 }
+
                 buttonShowedState = ButtonsState.GONE
             }
-            false
+            true
         }
     }
 
