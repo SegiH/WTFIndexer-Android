@@ -316,7 +316,7 @@ class MainActivity : AppCompatActivity(), OnRefreshListener {
     private fun updateEpisodes() {
         Toast.makeText(context, "Updating the episodes", Toast.LENGTH_LONG).show()
 
-        val updateEpisodesEndpoint = "WTF.php?UpdateEpisodes"
+        val updateEpisodesEndpoint = "WTF.php?ScrapeData"
         val requestQueue: RequestQueue = Volley.newRequestQueue(this)
         val request = JsonArrayRequest(
                 Request.Method.GET,

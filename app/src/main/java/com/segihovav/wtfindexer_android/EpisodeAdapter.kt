@@ -17,7 +17,6 @@ class EpisodeAdapter(private val episode: List<String>?, private val episodeInfo
     class MyViewHolder(view: View): RecyclerView.ViewHolder(view) {
         val episode: TextView = view.findViewById(R.id.name)
         val episodeInfo: TextView = view.findViewById(R.id.episodeInfo)
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
