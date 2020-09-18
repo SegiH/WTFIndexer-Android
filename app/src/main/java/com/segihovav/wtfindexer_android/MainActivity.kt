@@ -221,7 +221,7 @@ class MainActivity : AppCompatActivity(), OnRefreshListener {
         episodeInfo.clear()
 
         for (i in arrayList.indices) {
-            if (arrayList[i].imdbLink == null)
+            if (arrayList[i].imdbLink.equals(""))
                 episodeNames.add(arrayList[i].name)
             else
                 episodeNames.add(arrayList[i].imdbLink)
@@ -286,7 +286,7 @@ class MainActivity : AppCompatActivity(), OnRefreshListener {
                         try {
                             val jsonobject = jsonarray.getJSONObject(i)
 
-                            episodeList.add(Episodes(jsonobject.getString("EpisodeID").toInt(), jsonobject.getString("Name"), jsonobject.getString("ReleaseDate"), jsonobject.getString("Favorite").toInt(), jsonobject.getString("IMDBLink"), java.lang.Boolean.parseBoolean(jsonobject.getString("IsCheckedOut"))))
+                            episodeList.add(Episodes(jsonobject.getString("EpisodeID").toInt(), jsonobject.getString("Name"), jsonobject.getString("ReleaseDate"), jsonobject.getString("Favorite").toInt(), if (!jsonobject.getString("IMDBLink").equals("null")) jsonobject.getString("IMDBLink") else "", java.lang.Boolean.parseBoolean(jsonobject.getString("IsCheckedOut"))))
                         } catch (e: JSONException) {
                             e.printStackTrace()
                         }
