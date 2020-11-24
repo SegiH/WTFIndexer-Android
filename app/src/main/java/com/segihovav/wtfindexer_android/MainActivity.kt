@@ -322,9 +322,9 @@ class MainActivity : AppCompatActivity(), OnRefreshListener {
                 Request.Method.GET,
                 wtfIndexerURL + updateEpisodesEndpoint,
                 null,
-                Response.Listener { initRecyclerView(episodeList) },
+                Response.Listener { loadJSONData() },
                 Response.ErrorListener {
-                    //System.out.println("****** Error response=" + error.toString());
+                    System.out.println("****** Error response=" + it.toString());
                 })
 
         requestQueue.add(request)
