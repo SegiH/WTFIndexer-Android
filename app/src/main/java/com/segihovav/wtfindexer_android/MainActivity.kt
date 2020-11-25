@@ -29,18 +29,22 @@ import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonArrayRequest
+import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import org.json.JSONArray
 import org.json.JSONException
 import java.util.*
 
 // TO DO/Fix
+// Swipe not working
+// remove all instances of !!
 class MainActivity : AppCompatActivity(), OnRefreshListener {
     private var wtfIndexerURL: String? = null
     private val episodeList: MutableList<Episodes> = ArrayList()
     private var searchView: EditText? = null
-    private var swipeController: SwipeController? = null
+    private var swipeController: RecyclerTouchListener? = null
     private var sharedPreferences: SharedPreferences? = null
+    private lateinit var recyclerView: RecyclerView
     private val darkMode = R.style.Theme_AppCompat_DayNight
     private val lightMode = R.style.ThemeOverlay_MaterialComponents
 
@@ -61,9 +65,82 @@ class MainActivity : AppCompatActivity(), OnRefreshListener {
 
         // Init the SwipeController
         val mSwipeRefreshLayout = findViewById<SwipeRefreshLayout>(R.id.swipe_container)
-        swipeController = SwipeController(object : SwipeControllerActions() {}, episodeList)
 
-        // init swipe listener
+        // Controller that controls the left right recyclerview item swipe
+        recyclerView = findViewById(R.id.episodeList)
+        swipeController = RecyclerTouchListener(this, recyclerView)
+        recyclerView.addOnItemTouchListener(swipeController!!)
+
+        swipeController!!
+                .setClickable(object : RecyclerTouchListener.OnRowClickListener {
+                    override fun onRowClicked(position: Int) { /* Toast.makeText(applicationContext, myLinksList.get(position).Name, Toast.LENGTH_SHORT).show() */ }
+
+                    override fun onIndependentViewClicked(independentViewID: Int, position: Int) {}
+                })
+                .setSwipeOptionViews(R.id.check_in_out, R.id.favorite)
+                .setSwipeable(R.id.rowFG, R.id.rowBG, object : RecyclerTouchListener.OnSwipeOptionsClickListener {
+                    override fun onSwipeOptionClicked(viewID: Int, position: Int) {
+                        when (viewID) {
+                            R.id.check_in_out -> {
+                                alert("Check in/out", false)
+                                /*var requestQueue: RequestQueue
+                                val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(Objects.requireNonNull(MainActivity.context))
+                                val wtfIndexerURL = sharedPreferences.getString("WTFIndexerURL", "") + if (!sharedPreferences.getString("WTFIndexerURL", "")!!.endsWith("/")) "/" else ""
+                                val updateCheckInOut = "WTF.php?CheckInOut"
+
+                                // Toggle check in out value
+                                episodeList[position].toggleCheckedInOut()
+
+                                // Call REST endpoint to update the favorite for the current episode
+                                requestQueue = Volley.newRequestQueue(MainActivity.context)
+                                val request = JsonObjectRequest(
+                                        Request.Method.GET,
+                                        wtfIndexerURL + updateCheckInOut + "&EpisodeNumber=" + episodeList[position].episodeNumber + "&IsCheckedOut=" + !episodeList[position].isCheckedIn,
+                                        null,
+                                        // This line causes an error because the server side returns false on success and the error is com.android.volley.ParseError: org.json.JSONException: Value false of type java.lang.Boolean cannot be converted to JSONObject. This can only be fixed server side so ignore this false error for now (no pun intended)
+                                        Response.Listener {
+                                            alert("The episode has been checked " + (if (episodeList[position].isCheckedIn) "in" else "out"), false)
+                                                          /*if (episodeList[position].isCheckedIn) {
+
+                                            }*/
+                                        },
+                                        Response.ErrorListener { error ->
+                                            // The REST endpoint returns an error
+                                            println("****** Error response when updating check in/out=$error") // + " " + WTFIndexerURL + updateCheckInOut + "&EpisodeNumber=" + episodes.get(position).getEpisodeNumber() + "&IsCheckedOut=" + !episodes.get(position).getIsCheckedIn());
+                                        })
+                                requestQueue.add(request)*/
+                            }
+                            R.id.favorite -> {
+                                var requestQueue: RequestQueue
+
+                                val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(Objects.requireNonNull(MainActivity.context))
+                                val wtfIndexerURL = sharedPreferences.getString("WTFIndexerURL", "") + if (!sharedPreferences.getString("WTFIndexerURL", "")!!.endsWith("/")) "/" else ""
+                                val updateEpisodeFavoriteEndpoint = "WTF.php?UpdateFavorite"
+
+
+                                // Toggle favorite value
+                                episodeList[position].toggleFavorite()
+
+                                // Call REST endpoint to update the favorite for the current episode
+                                requestQueue = Volley.newRequestQueue(MainActivity.context)
+                                val request = JsonArrayRequest(
+                                        Request.Method.GET,
+                                        wtfIndexerURL + updateEpisodeFavoriteEndpoint + "&EpisodeNumber=" + episodeList[position].episodeNumber + "&FavoriteValue=" +episodeList[position].favorite,
+                                        null,
+                                        Response.Listener { },
+                                        Response.ErrorListener {
+                                            // The REST endpoint returns an error because updateEpisodeFavoriteEndpoint doesn't return anything but the favorite updates anyways so ignore this error for now
+                                            //System.out.println("****** Error response when updating favorite=" + error.toString() + " " + WTFIndexerURL + updateEpisodeFavoriteEndpoint + "&EpisodeNumber=" + episodes.get(position).getEpisodeNumber() + "&FavoriteValue=" + episodes.get(position).getFavorite());
+                                        })
+                                requestQueue.add(request)
+                            }
+                        }
+                    }
+                })
+
+        recyclerView.addOnItemTouchListener(swipeController!!)
+
+        // init swipe to refresh listener
         mSwipeRefreshLayout.setOnRefreshListener(this)
         mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, android.R.color.holo_green_dark, android.R.color.holo_orange_dark, android.R.color.holo_blue_dark)
         mSwipeRefreshLayout.setOnRefreshListener { loadJSONData() }
@@ -119,7 +196,7 @@ class MainActivity : AppCompatActivity(), OnRefreshListener {
     override fun onConfigurationChanged(newConfig: Configuration) {
        super.onConfigurationChanged(newConfig)
 
-       val recyclerView: RecyclerView = findViewById(R.id.episodeList)
+       recyclerView = findViewById(R.id.episodeList)
 
        if (recyclerView.adapter != null) recyclerView.adapter!!.notifyDataSetChanged()
     }
@@ -230,8 +307,9 @@ class MainActivity : AppCompatActivity(), OnRefreshListener {
             episodeInfo.add("#" + arrayList[i].episodeNumber + " " + arrayList[i].releaseDate.replace("Â",""))
         }
 
-        // specify an adapter (see also next example)
+        // specify an adapter
         adapter = EpisodeAdapter(episodeNames, episodeInfo)
+        adapter.setDarkMode((sharedPreferences!!.getBoolean("DarkThemeOn", false)))
         adapter.notifyDataSetChanged()
 
         layoutManager = LinearLayoutManager(applicationContext)
@@ -239,11 +317,6 @@ class MainActivity : AppCompatActivity(), OnRefreshListener {
         val recyclerView: RecyclerView = findViewById(R.id.episodeList)
         recyclerView.layoutManager = layoutManager
         recyclerView.itemAnimator = DefaultItemAnimator()
-
-        swipeController!!.setEpisodeList(arrayList)
-
-        val itemTouchhelper = ItemTouchHelper(swipeController!!)
-        itemTouchhelper.attachToRecyclerView(recyclerView)
 
         recyclerView.adapter = adapter
         registerForContextMenu(recyclerView)

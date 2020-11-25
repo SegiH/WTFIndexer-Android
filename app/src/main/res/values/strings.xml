@@ -8,4 +8,8 @@
     <string name="save">Save</string>string>
     <string name="goBack">Go Back</string>string>
     <string name="darkMode">Dark Mode</string>string>
+    <string name="checkedIn">Checked In</string>string>
+    <string name="checkedOut">Checked Out</string>string>
+    <string name="favorite">Favorite</string>string>
+    <string name="Unfavorite">Unfavorite</string>string>
 </resources>

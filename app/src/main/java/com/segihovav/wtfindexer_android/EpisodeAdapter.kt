@@ -6,6 +6,8 @@ import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.text.HtmlCompat
 import androidx.preference.PreferenceManager
@@ -14,18 +16,27 @@ import com.segihovav.wtfindexer_android.EpisodeAdapter.MyViewHolder
 import java.util.*
 
 class EpisodeAdapter(private val episode: List<String>?, private val episodeInfo: List<String?>) : RecyclerView.Adapter<MyViewHolder>() {
+    var darkMode: Boolean = false
+    var rowFG: LinearLayout? = null
+    var itemView: View? = null
+
     class MyViewHolder(view: View): RecyclerView.ViewHolder(view) {
-        val episode: TextView = view.findViewById(R.id.name)
-        val episodeInfo: TextView = view.findViewById(R.id.episodeInfo)
+        val episode: TextView = view.findViewById(R.id.episode_name)
+        val episodeInfo: TextView = view.findViewById(R.id.episode_info)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.rowlayout, parent, false)
+        itemView = LayoutInflater.from(parent.context).inflate(R.layout.swipe_item, parent, false)
 
-        return MyViewHolder(itemView)
+        rowFG=itemView?.findViewById(R.id.rowFG)
+
+        return MyViewHolder(itemView!!)
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
+        if (darkMode)
+            rowFG?.setBackgroundColor(Color.GRAY)
+
         holder.episode.text = if (episode != null && episode[position].contains("<A")) Html.fromHtml(episode[position], HtmlCompat.FROM_HTML_MODE_LEGACY) else (episode!![position])
 
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(Objects.requireNonNull(MainActivity.context))
@@ -41,5 +52,10 @@ class EpisodeAdapter(private val episode: List<String>?, private val episodeInfo
 
     override fun getItemCount(): Int {
         return episode?.size ?: 0
+    }
+
+    @JvmName("setDarkMode1")
+    public fun setDarkMode(_darkMode: Boolean) {
+        this.darkMode=_darkMode
     }
 }

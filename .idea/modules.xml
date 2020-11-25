@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/WTFIndexer-Android.iml" filepath="$PROJECT_DIR$/.idea/modules/WTFIndexer-Android.iml" group="WTFIndexer-Android" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/app.iml" group="WTFIndexer-Android/app" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/WTFIndexer-Android.iml" filepath="$PROJECT_DIR$/.idea/modules/WTFIndexer-Android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/WTFIndexer-Android.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/WTFIndexer-Android.app.iml" />
     </modules>
   </component>
 </project>
