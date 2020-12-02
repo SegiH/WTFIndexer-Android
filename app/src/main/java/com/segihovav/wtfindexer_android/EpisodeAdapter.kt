@@ -7,13 +7,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.text.HtmlCompat
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
 import com.segihovav.wtfindexer_android.EpisodeAdapter.MyViewHolder
 import java.util.*
 
-class EpisodeAdapter(private val episode: List<String>?, private val episodeInfo: List<String?>) : RecyclerView.Adapter<MyViewHolder>() {
+class EpisodeAdapter(private val episode: List<String>?, private val episodeInfo: List<String?>, private val episodeDescription: List<String?>) : RecyclerView.Adapter<MyViewHolder>() {
     class MyViewHolder(view: View): RecyclerView.ViewHolder(view) {
         val episode: TextView = view.findViewById(R.id.name)
         val episodeInfo: TextView = view.findViewById(R.id.episodeInfo)
@@ -37,6 +38,14 @@ class EpisodeAdapter(private val episode: List<String>?, private val episodeInfo
         holder.episode.movementMethod = LinkMovementMethod.getInstance()
 
         if (episodeInfo[position] != null) holder.episodeInfo.text = episodeInfo[position]
+
+        // When the user long presses on the item, show the longer episode description
+        holder.itemView.setOnLongClickListener {
+            if (episodeDescription[position] != "")
+                 Toast.makeText(MainActivity.context, episodeDescription[position], Toast.LENGTH_LONG).show()
+
+            return@setOnLongClickListener true
+        }
     }
 
     override fun getItemCount(): Int {

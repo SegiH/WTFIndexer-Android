@@ -13,6 +13,7 @@ import android.text.TextWatcher
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.View.OnLongClickListener
 import android.view.ViewGroup.MarginLayoutParams
 import android.widget.EditText
 import android.widget.Toast
@@ -63,7 +64,7 @@ class MainActivity : AppCompatActivity(), OnRefreshListener {
         val mSwipeRefreshLayout = findViewById<SwipeRefreshLayout>(R.id.swipe_container)
         swipeController = SwipeController(object : SwipeControllerActions() {}, episodeList)
 
-        // init swipe listener
+        // init swipe to refresh listener
         mSwipeRefreshLayout.setOnRefreshListener(this)
         mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, android.R.color.holo_green_dark, android.R.color.holo_orange_dark, android.R.color.holo_blue_dark)
         mSwipeRefreshLayout.setOnRefreshListener { loadJSONData() }
@@ -209,6 +210,7 @@ class MainActivity : AppCompatActivity(), OnRefreshListener {
     private fun initRecyclerView(arrayList: List<Episodes>) {
         val episodeNames: MutableList<String>
         val episodeInfo: MutableList<String>
+        val episodeDescription: MutableList<String>
         val adapter: EpisodeAdapter
         val layoutManager: RecyclerView.LayoutManager
         val mSwipeRefreshLayout = findViewById<SwipeRefreshLayout>(R.id.swipe_container)
@@ -220,6 +222,9 @@ class MainActivity : AppCompatActivity(), OnRefreshListener {
         episodeInfo = ArrayList()
         episodeInfo.clear()
 
+        episodeDescription = ArrayList()
+        episodeDescription.clear()
+
         for (i in arrayList.indices) {
             if (arrayList[i].imdbLink.equals(""))
                 episodeNames.add(arrayList[i].name)
@@ -227,11 +232,13 @@ class MainActivity : AppCompatActivity(), OnRefreshListener {
                 episodeNames.add(arrayList[i].imdbLink)
 
             // Set value of episode info
-            episodeInfo.add("#" + arrayList[i].episodeNumber + " " + arrayList[i].releaseDate.replace("Â",""))
+            episodeInfo.add("#" + arrayList[i].episodeNumber + " " + arrayList[i].releaseDate.replace("Â", ""))
+
+            episodeDescription.add(arrayList[i].description)
         }
 
         // specify an adapter (see also next example)
-        adapter = EpisodeAdapter(episodeNames, episodeInfo)
+        adapter = EpisodeAdapter(episodeNames, episodeInfo, episodeDescription)
         adapter.notifyDataSetChanged()
 
         layoutManager = LinearLayoutManager(applicationContext)
@@ -286,7 +293,8 @@ class MainActivity : AppCompatActivity(), OnRefreshListener {
                         try {
                             val jsonobject = jsonarray.getJSONObject(i)
 
-                            episodeList.add(Episodes(jsonobject.getString("EpisodeID").toInt(), jsonobject.getString("Name"), jsonobject.getString("ReleaseDate"), jsonobject.getString("Favorite").toInt(), if (!jsonobject.getString("IMDBLink").equals("null")) jsonobject.getString("IMDBLink") else "", java.lang.Boolean.parseBoolean(jsonobject.getString("IsCheckedOut"))))
+                            episodeList.add(Episodes(jsonobject.getString("EpisodeID").toInt(), jsonobject.getString("Name"), jsonobject.getString("ReleaseDate"), jsonobject.getString("Favorite").toInt(), if (!jsonobject.getString("IMDBLink").equals("null")) jsonobject.getString("IMDBLink") else "", java.lang.Boolean.parseBoolean(jsonobject.getString("IsCheckedOut")), jsonobject.getString("Description")))
+                            ""
                         } catch (e: JSONException) {
                             e.printStackTrace()
                         }
