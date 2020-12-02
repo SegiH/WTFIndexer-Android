@@ -1,6 +1,6 @@
 package com.segihovav.wtfindexer_android
 
-data class Episodes internal constructor(val episodeNumber: Int, val name: String, val releaseDate: String, var favorite: Int, val imdbLink: String, var isCheckedIn: Boolean) {
+data class Episodes internal constructor(val episodeNumber: Int, val name: String, val releaseDate: String, var favorite: Int, val imdbLink: String, var isCheckedIn: Boolean,var description: String) {
     fun toggleCheckedInOut() {
         isCheckedIn = !isCheckedIn
     }

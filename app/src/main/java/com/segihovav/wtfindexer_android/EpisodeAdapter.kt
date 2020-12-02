@@ -9,13 +9,14 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.text.HtmlCompat
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
 import com.segihovav.wtfindexer_android.EpisodeAdapter.MyViewHolder
 import java.util.*
 
-class EpisodeAdapter(private val episode: List<String>?, private val episodeInfo: List<String?>) : RecyclerView.Adapter<MyViewHolder>() {
+class EpisodeAdapter(private val episode: List<String>?, private val episodeInfo: List<String?>, private val episodeDescription: List<String?>) : RecyclerView.Adapter<MyViewHolder>() {
     var darkMode: Boolean = false
     var rowFG: LinearLayout? = null
     var itemView: View? = null
@@ -48,6 +49,12 @@ class EpisodeAdapter(private val episode: List<String>?, private val episodeInfo
         holder.episode.movementMethod = LinkMovementMethod.getInstance()
 
         if (episodeInfo[position] != null) holder.episodeInfo.text = episodeInfo[position]
+
+        // When the user long presses on the item, show the longer episode description
+        holder.itemView.setOnClickListener {
+            if (episodeDescription[position] != "")
+                Toast.makeText(MainActivity.context, episodeDescription[position], Toast.LENGTH_LONG).show()
+        }
     }
 
     override fun getItemCount(): Int {
